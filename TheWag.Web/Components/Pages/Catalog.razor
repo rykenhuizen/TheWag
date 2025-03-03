@@ -1,0 +1,48 @@
+﻿@using TheWag.Models;
+@using TheWag.Data;
+
+@page "/catalog"
+@attribute [StreamRendering(true)]
+@attribute [OutputCache(Duration = 5)]
+
+
+<PageTitle>Catalog</PageTitle>
+
+<h3>Catalog</h3>
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="container">
+        <div class="row row-cols-auto">
+    @foreach (var product in products)
+    {
+            <div class="col">
+                <div class="card" style="width: 18rem;">
+                    <img src="@product.URL" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Id</h5>
+                        <p class="card-text">@product.Description</p>
+                        <p class="card-text">Price: $@product.Price</p>
+                        <p class="card-text">Stock: @product.Stock</p>
+                        <a href="#" class="btn btn-primary">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+    }
+        </div>
+    </div>
+}
+
+@code {
+    private IList<TheWag.Models.Product>? products;
+
+    protected override void OnInitialized()
+    {
+        var productRepo = new ProductRepo();
+        products = productRepo.GetProducts(null);
+    }
+}

@@ -54,3 +54,9 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+.img, .force-fit {
+    width: 200px;
+    height: 200px;
+    object-fit: cover
+}

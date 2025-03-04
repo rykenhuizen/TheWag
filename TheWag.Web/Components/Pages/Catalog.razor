@@ -21,8 +21,8 @@ else
     @foreach (var product in products)
     {
             <div class="col">
-                    <div class="card container-sm">
-                    <img src="@product.URL" class="card-img-top" alt="...">
+                <div class="card container-sm">
+                        <img src="@product.URL" class="card-img-top force-fit" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">@product.Id</h5>
                         <p class="card-text">@product.Description</p>

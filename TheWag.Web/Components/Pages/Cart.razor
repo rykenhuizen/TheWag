@@ -9,46 +9,47 @@
 <PageTitle>Sopping cart</PageTitle>
 
 <h3>Shopping Cart</h3>
+<div class="container-fluid">
 
-@if (cart == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <p>Order for @cart?.Customer.Email</p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Description</th>
-                <th>Qty</th>
-                <th>Price</th>
-                <th>Sub Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in cart?.Items)
-            {
+    @if (cart == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <p>Order for @cart?.Customer.Email</p>
+        <table class="table">
+            <thead>
                 <tr>
-                    <td></td>
-                    <td>@item.Product.Description</td>
-                    <td>@item.Quantity</td>
-                    <td>$@item.Product.Price</td>
-                    <td>$@GetSubTotal(item.Quantity, item.Product.Price)</td>
+                    <th></th>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Sub Total</th>
                 </tr>
-            }
-            <tr>
-                <td>Total</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>$@total</td>
-            </tr>
-        </tbody>
-    </table>
-}
-
+            </thead>
+            <tbody>
+                @foreach (var item in cart?.Items)
+                {
+                    <tr>
+                        <td></td>
+                        <td>@item.Product.Description</td>
+                        <td>@item.Quantity</td>
+                        <td>$@item.Product.Price</td>
+                        <td>$@GetSubTotal(item.Quantity, item.Product.Price)</td>
+                    </tr>
+                }
+                <tr>
+                    <td>Total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>$@total</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+</div>
 @code {
     private TheWag.Models.Cart? cart;
     private decimal total = 0;

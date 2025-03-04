@@ -1,5 +1,8 @@
-﻿@using TheWag.Models;
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using TheWag.Models;
 @using TheWag.Data;
+
+@inject ProtectedSessionStorage ProtectedSessionStore
 
 @page "/cart"
 @attribute [StreamRendering(true)]
@@ -21,7 +24,6 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th></th>
                     <th>Description</th>
                     <th>Qty</th>
                     <th>Price</th>
@@ -29,19 +31,24 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in cart?.Items)
+                @foreach (var item in cart.Items)
                 {
                     <tr>
-                        <td></td>
-                        <td>@item.Product.Description</td>
-                        <td>@item.Quantity</td>
+                        <td>
+                            <img src="@item.Product.URL" class="card-img-top force-fit-thumbnail" alt="@item.Product.Description">
+                            <span style="display:inline-block">@item.Product.Description</span>
+                        </td>
+                        <td>
+                            <img src="images/delete.png" class="icon" @onclick="(() => RemoveItem(item.Product.Id))" /> 
+                            @item.Quantity
+                            <img src="images/plus.png" class="icon" @onclick="(() => AddItem(item.Product.Id))" />
+                        </td>
                         <td>$@item.Product.Price</td>
                         <td>$@GetSubTotal(item.Quantity, item.Product.Price)</td>
                     </tr>
                 }
                 <tr>
                     <td>Total</td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td>$@total</td>
@@ -54,16 +61,60 @@
     private TheWag.Models.Cart? cart;
     private decimal total = 0;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        var cartRepo = new CartRepo();
-        cart = cartRepo.GetCart();
+        //see if a cart exists in session
+        var result = await ProtectedSessionStore.GetAsync<TheWag.Models.Cart>("cart");
+        cart = result.Success ? result.Value : null;
+        if (cart == null)
+        {
+            //no cart found, create one
+            cart = new TheWag.Models.Cart()
+                {
+                    Customer = new Customer() { Email = "email" },
+                    Items = new List<CartItem>() { }
+                };
+            await ProtectedSessionStore.SetAsync("cart", cart);
+        }
+        UpdateTotal();
+
     }
 
     private decimal GetSubTotal(int qty, decimal price)
     {
         var subtotal = qty * price;
-        total += subtotal;
         return subtotal;
     }
+
+    private void UpdateTotal()
+    {
+        total = 0;
+        foreach(var item in cart.Items){
+            total += item.Quantity * item.Product.Price;
+        }
+       
+    }
+
+    private async Task AddItem(int id){
+        var item = cart.Items.FirstOrDefault(x => x.Product.Id == id).Quantity++;
+
+        await ProtectedSessionStore.SetAsync("cart", cart);
+        UpdateTotal();
+    }
+
+    private async Task RemoveItem(int id)
+    {
+        var item = cart.Items.FirstOrDefault(x => x.Product.Id == id);
+        if (item.Quantity <= 1)
+        {
+            cart.Items.Remove(item);
+        }
+        else
+        {
+            item.Quantity--;
+        }
+        await ProtectedSessionStore.SetAsync("cart", cart);
+        UpdateTotal();
+    }
+	
 }

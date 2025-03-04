@@ -25,12 +25,10 @@ else
             {
                 <div class="col">
                     <div class="card container-sm">
-                        <img src="@vmProduct.Product.URL" class="card-img-top force-fit" alt="...">
+                        <img src="@vmProduct.Product.URL" class="card-img-top force-fit" alt="@vmProduct.Product.Description">
                         <div class="card-body">
-                            <h5 class="card-title">@vmProduct.Product.Id</h5>
-                            <p class="card-text">@vmProduct.Product.Description</p>
+                            <h5 class="card-title">@vmProduct.Product.Description</h5>
                             <p class="card-text">Price: $@vmProduct.Product.Price</p>
-                            <p class="card-text">Stock: @vmProduct.Product.Stock</p>
                             <button type="button" @onclick="(() => AddToCart(vmProduct.Product.Id))" class="btn btn-primary position-relative">
                                 @vmProduct.addBtnText
                                 <span class="@vmProduct.hideBadge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">

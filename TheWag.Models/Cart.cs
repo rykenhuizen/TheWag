@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace TheWag.Models
 {
-    public record Cart
+    public class Cart
     {
         public required IList<CartItem> Items { get; init; }
         public required Customer Customer { get; init; }
-        public required Promo[]? Promo { get; init; }
+        public Promo[]? Promo { get; init; }
     }
 }

@@ -1,5 +1,8 @@
-﻿@using TheWag.Models;
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using TheWag.Models;
 @using TheWag.Data;
+
+@inject ProtectedSessionStorage ProtectedSessionStore
 
 @page "/catalog"
 @attribute [StreamRendering(true)]
@@ -10,7 +13,7 @@
 
 <h3>Catalog</h3>
 
-@if (products == null)
+@if (vmProducts == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -18,31 +21,105 @@ else
 {
     <div class="container">
         <div class="row row-cols-auto">
-    @foreach (var product in products)
-    {
-            <div class="col">
-                <div class="card container-sm">
-                        <img src="@product.URL" class="card-img-top force-fit" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">@product.Id</h5>
-                        <p class="card-text">@product.Description</p>
-                        <p class="card-text">Price: $@product.Price</p>
-                        <p class="card-text">Stock: @product.Stock</p>
-                        <a href="#" class="btn btn-primary">Add to cart</a>
+            @foreach (var vmProduct in vmProducts)
+            {
+                <div class="col">
+                    <div class="card container-sm">
+                        <img src="@vmProduct.Product.URL" class="card-img-top force-fit" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">@vmProduct.Product.Id</h5>
+                            <p class="card-text">@vmProduct.Product.Description</p>
+                            <p class="card-text">Price: $@vmProduct.Product.Price</p>
+                            <p class="card-text">Stock: @vmProduct.Product.Stock</p>
+                            <button type="button" @onclick="(() => AddToCart(vmProduct.Product.Id))" class="btn btn-primary position-relative">
+                                @vmProduct.addBtnText
+                                <span class="@vmProduct.hideBadge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    @vmProduct.Quantity In cart
+                                    <span class="visually-hidden">Already in cart</span>
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-    }
+            }
         </div>
     </div>
 }
 
 @code {
-    private IList<TheWag.Models.Product>? products;
+    private IList<vmProduct>? vmProducts = new List<vmProduct>();
+    private int? currentCount = 0;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        //see if a cart exists in session
+        var result = await ProtectedSessionStore.GetAsync<TheWag.Models.Cart>("cart");
+        var cart = result.Success ? result.Value : null;
+        if (cart == null)
+        {
+            //no cart found, create one
+            cart = new TheWag.Models.Cart()
+            {
+                Customer = new Customer() { Email = "email" },
+                Items = new List<CartItem>() {}
+            };
+        }
+
+        //get all products
         var productRepo = new ProductRepo();
-        products = productRepo.GetProducts(null);
+        var products = productRepo.GetProducts(null);
+
+        //create a view model for each product
+        foreach (var product in products)
+        {
+            var qty = cart.Items.FirstOrDefault(x => x.Product.Id == product.Id)?.Quantity ?? 0;
+            vmProducts.Add(new vmProduct() { 
+                    Product = product, 
+                    Quantity = qty,
+                    addBtnText = qty > 0 ? "Add another" : "Add to cart",
+                    hideBadge = qty > 0 ? "" : "visually-hidden"
+            });
+        }
+
+        //persist the cart to session
+        await ProtectedSessionStore.SetAsync("cart", cart);
+
+    }
+
+
+    private async Task AddToCart(int id)
+    {
+        //update the vm
+        var vm = vmProducts.FirstOrDefault(x => x.Product.Id == id);
+        vm.Quantity ++;
+        vm.hideBadge = "";
+        vm.addBtnText = "Add another";
+
+
+        //update the cart
+        var result = await ProtectedSessionStore.GetAsync<TheWag.Models.Cart>("cart");
+        var cart = result.Success ? result.Value : null;
+        var cartItem = cart?.Items.FirstOrDefault(x => x.Product.Id == id);
+        if(cartItem == null){
+            cart.Items.Add(new CartItem
+                {
+                    Product = vm.Product,
+                    Quantity = 1
+                });
+        }
+        else{
+            cartItem.Quantity++;
+        }
+        
+        await ProtectedSessionStore.SetAsync("cart", cart);
+    }
+
+    public class vmProduct
+    {
+        public required Product Product { get; set; }
+        public int Quantity { get; set; } = 0;
+        public required string addBtnText { get; set; }
+        public string hideBadge { get; set; } = "";
+
     }
 }

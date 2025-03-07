@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+using TheWag.Util.Azure;
 using TheWag.Web;
 using TheWag.Web.Components;
 
@@ -11,7 +13,12 @@ builder.AddRedisOutputCache("cache");
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddSingleton<ComputerVision>();
+//builder.Services.AddSingleton<BlobService>(new BlobService("thewagstorage"));
+//builder.Services.AddSingleton<ComputerVisionService>(new ComputerVisionService("thewagcomputervision"));
+
+//lazy load
+builder.Services.AddSingleton<BlobService>(serviceProvider => new BlobService("thewagstorage"));
+builder.Services.AddSingleton<ComputerVisionService>(serviceProvider => new ComputerVisionService("thewagcomputervision"));
 
 builder.Services.AddHttpClient<WeatherApiClient>(client =>
     {

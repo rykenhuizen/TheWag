@@ -1,9 +1,8 @@
 ﻿@using TheWag.Models;
-@using System.IO;
-@using System.Buffers;
-@using Azure.Storage.Blobs;
-@using Azure;
-@inject IWebHostEnvironment Env
+@using TheWag.Util.Azure;
+
+@inject BlobService bs;
+@inject ComputerVisionService cv;
 
 @page "/sell"
 
@@ -54,7 +53,7 @@
 		var file = e.File;
 		if (file != null)
 		{
-
+			//get a memory stream of the uploaded img
 			MemoryStream ms = new MemoryStream();
 			await e.File.OpenReadStream().CopyToAsync(ms);
 			var bd = new BinaryData(ms.ToArray());
@@ -63,14 +62,14 @@
 			//TODO: check for duplicate pic
 
 			//get image analysis from computer vision service
-			var cv = new TheWag.Util.Azure.ComputerVisionService("thewagcomputervision");
 			var imageAnalysis = cv.GetImageAnalysis(bd);
 
-			var bs = new TheWag.Util.Azure.BlobService("thewagstorage");
+			//save the image to blob storage
 			var blobContainer = "dogpictures"; //vm.IsDog ? "dogpictures" : "invalidPictures";
 			var fileName = Guid.NewGuid().ToString() + e.File.Name;
 			bs.UploadBlob(blobContainer, fileName, bd);
 
+			//update the view model
 			vm = new vmSellUpload();
 			vm.Description = imageAnalysis.Description;
 			vm.Tags = imageAnalysis.Tags;

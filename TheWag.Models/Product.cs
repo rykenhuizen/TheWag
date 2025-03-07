@@ -13,5 +13,6 @@ namespace TheWag.Models
         public required decimal Price { get; init; }
         public required int Stock { get; init; }
         public required string Description { get; init; }
+        public IList<string> tags { get; init; } = []; 
     }
 }

@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35506.116 d17.12
+VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.AppHost", "TheWag.AppHost\TheWag.AppHost.csproj", "{188F149D-18BF-4CA6-B051-ECC8FD4CD0A5}"
 EndProject
@@ -15,6 +15,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Models", "TheWag.Models\TheWag.Models.csproj", "{01E78EE2-10CD-4669-A2C7-22D575A09DAB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Data", "TheWag.Data\TheWag.Data.csproj", "{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Util.Azure", "TheWag.Util.Azure\TheWag.Util.Azure.csproj", "{B22096D2-7245-4313-A1FD-FAFAAE281DEF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,10 @@ Global
 		{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B22096D2-7245-4313-A1FD-FAFAAE281DEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B22096D2-7245-4313-A1FD-FAFAAE281DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B22096D2-7245-4313-A1FD-FAFAAE281DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B22096D2-7245-4313-A1FD-FAFAAE281DEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

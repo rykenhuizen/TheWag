@@ -1,0 +1,92 @@
+﻿@using TheWag.Models;
+@using System.IO;
+@using System.Buffers;
+@using Azure.Storage.Blobs;
+@using Azure;
+@inject IWebHostEnvironment Env
+
+@page "/sell"
+
+<h3>Sell you dog pictures!</h3>
+
+
+@if (vm != null)
+{
+	<div>
+
+		<h3>Upload complete.</h3>
+		<p>Description: @vm.Description</p>
+		<p>Tags: @string.Join(",", vm.Tags.Select(x => x))</p>
+		<p>
+			Is this a pick of a dog: 
+			@if(vm.IsDog){
+				<span> this is a dog!</span>
+			} else{
+				<span> does not seem to be a picture of a dog</span>
+			}
+		</p>
+		<img src="@vm.URL" />
+	</div>
+}else
+{
+	<div>
+		<InputFile OnChange="OnInputFileChange" single />
+	</div>
+}
+
+@code {
+
+
+	private vmSellUpload vm;
+
+	private static readonly HashSet<string> _imageExtension = new HashSet<string>([".jpg", ".jpeg", ".png", ".gif", ".webp"], StringComparer.OrdinalIgnoreCase);
+
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		//getImgInfo();
+
+	}
+
+	private async void OnInputFileChange(InputFileChangeEventArgs e)
+	{
+		var file = e.File;
+		if (file != null)
+		{
+
+			MemoryStream ms = new MemoryStream();
+			await e.File.OpenReadStream().CopyToAsync(ms);
+			var bd = new BinaryData(ms.ToArray());
+
+			//TODO: compress and crop image (try using Magick.NET)
+			//TODO: check for duplicate pic
+
+			//get image analysis from computer vision service
+			var cv = new TheWag.Util.Azure.ComputerVisionService("thewagcomputervision");
+			var imageAnalysis = cv.GetImageAnalysis(bd);
+
+			var bs = new TheWag.Util.Azure.BlobService("thewagstorage");
+			var blobContainer = "dogpictures"; //vm.IsDog ? "dogpictures" : "invalidPictures";
+			var fileName = Guid.NewGuid().ToString() + e.File.Name;
+			bs.UploadBlob(blobContainer, fileName, bd);
+
+			vm = new vmSellUpload();
+			vm.Description = imageAnalysis.Description;
+			vm.Tags = imageAnalysis.Tags;
+			vm.IsDog = imageAnalysis.Tags.Contains("dog");
+			vm.URL = $"https://thewagstorage.blob.core.windows.net/{blobContainer}/{fileName}";
+			StateHasChanged();
+		}
+	}
+
+	public class vmSellUpload
+	{
+
+		public string Description { get; set; }
+		public IList<string> Tags { get; set; }
+		public bool IsDog { get; set; }
+		public string URL { get; set; }
+	}
+
+}

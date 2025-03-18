@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Models", "TheWag.Mod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Data", "TheWag.Data\TheWag.Data.csproj", "{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Util.Azure", "TheWag.Util.Azure\TheWag.Util.Azure.csproj", "{B22096D2-7245-4313-A1FD-FAFAAE281DEF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util.Azure.ComputerVision", "Util.Azure.ComputerVisionClient\Util.Azure.ComputerVision.csproj", "{9DC28540-99CA-4703-A58B-80A09B703EFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,10 +52,10 @@ Global
 		{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B22096D2-7245-4313-A1FD-FAFAAE281DEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B22096D2-7245-4313-A1FD-FAFAAE281DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B22096D2-7245-4313-A1FD-FAFAAE281DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B22096D2-7245-4313-A1FD-FAFAAE281DEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DC28540-99CA-4703-A58B-80A09B703EFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DC28540-99CA-4703-A58B-80A09B703EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DC28540-99CA-4703-A58B-80A09B703EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DC28540-99CA-4703-A58B-80A09B703EFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

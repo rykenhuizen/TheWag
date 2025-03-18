@@ -47,7 +47,6 @@ else
 
 @code {
     private IList<vmProduct>? vmProducts = new List<vmProduct>();
-    private int? currentCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -89,7 +88,7 @@ else
     private async Task AddToCart(int id)
     {
         //update the vm
-        var vm = vmProducts.FirstOrDefault(x => x.Product.Id == id);
+        var vm = vmProducts?.FirstOrDefault(x => x.Product.Id == id);
         vm.Quantity ++;
         vm.hideBadge = "";
         vm.addBtnText = "Add another";

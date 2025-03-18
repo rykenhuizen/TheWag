@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Azure.AI.Vision.ImageAnalysis;
+﻿using Azure.AI.Vision.ImageAnalysis;
 
-namespace TheWag.Util.Images.Models
+namespace Util.Azure.ComputerVision.Models
 {
     public class ImageAnalysisResults
     {

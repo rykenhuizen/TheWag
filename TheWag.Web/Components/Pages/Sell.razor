@@ -1,13 +1,13 @@
 ﻿@using TheWag.Models;
-@using TheWag.Util.Azure;
+@using Util.Azure.ComputerVision;
+@using Azure.Storage.Blobs;
 
-@inject BlobService bs;
-@inject ComputerVisionService cv;
+@inject ComputerVisionClient visionClient; 
+@inject BlobServiceClient blobClient;
 
 @page "/sell"
 
 <h3>Sell you dog pictures!</h3>
-
 
 @if (vm != null)
 {
@@ -35,24 +35,23 @@
 
 @code {
 
-
 	private vmSellUpload vm;
-
 	private static readonly HashSet<string> _imageExtension = new HashSet<string>([".jpg", ".jpeg", ".png", ".gif", ".webp"], StringComparer.OrdinalIgnoreCase);
 
+	// protected override async Task OnInitializedAsync()
+	// {
+	// 	//getImgInfo();
 
-
-	protected override async Task OnInitializedAsync()
-	{
-		//getImgInfo();
-
-	}
+	// }
 
 	private async void OnInputFileChange(InputFileChangeEventArgs e)
 	{
 		var file = e.File;
 		if (file != null)
 		{
+			//TODO: I think there is a better solution than this tempVm
+			var tempVm = new vmSellUpload();
+
 			//get a memory stream of the uploaded img
 			MemoryStream ms = new MemoryStream();
 			await e.File.OpenReadStream().CopyToAsync(ms);
@@ -62,19 +61,41 @@
 			//TODO: check for duplicate pic
 
 			//get image analysis from computer vision service
-			var imageAnalysis = cv.GetImageAnalysis(bd);
+			try
+			{
+				var imageAnalysis = visionClient.GetImageAnalysis(bd);
+				tempVm.Description = imageAnalysis.Description;
+				tempVm.Tags = imageAnalysis.Tags;
+				tempVm.IsDog = imageAnalysis.Tags.Contains("dog");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.ToString());
+				tempVm.Description = "Error analyzing image" + ex.ToString();
+			}
+
 
 			//save the image to blob storage
-			var blobContainer = "dogpictures"; //vm.IsDog ? "dogpictures" : "invalidPictures";
-			var fileName = Guid.NewGuid().ToString() + e.File.Name;
-			bs.UploadBlob(blobContainer, fileName, bd);
+			//TODO: do this first and take advantage of async
+			try{
 
-			//update the view model
-			vm = new vmSellUpload();
-			vm.Description = imageAnalysis.Description;
-			vm.Tags = imageAnalysis.Tags;
-			vm.IsDog = imageAnalysis.Tags.Contains("dog");
-			vm.URL = $"https://thewagstorage.blob.core.windows.net/{blobContainer}/{fileName}";
+				var blobContainer = tempVm.IsDog == true ? "dogpictures" : "invalidpictures";
+				var bcc = blobClient.GetBlobContainerClient(blobContainer);
+				bcc.CreateIfNotExists();
+				bcc.SetAccessPolicy(Azure.Storage.Blobs.Models.PublicAccessType.BlobContainer);
+
+				var fileName = Guid.NewGuid().ToString() + e.File.Name;
+				bcc.UploadBlob(fileName, bd);
+				bcc.SetAccessPolicy(Azure.Storage.Blobs.Models.PublicAccessType.BlobContainer);
+
+				tempVm.URL = $"{blobClient.Uri.ToString().TrimEnd('/')}/{blobContainer}/{fileName}";
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.ToString());
+				tempVm.Description += " Error uploading image: " + ex.ToString();
+			}
+			vm = tempVm;		
 			StateHasChanged();
 		}
 	}
@@ -82,10 +103,10 @@
 	public class vmSellUpload
 	{
 
-		public string Description { get; set; }
-		public IList<string> Tags { get; set; }
-		public bool IsDog { get; set; }
-		public string URL { get; set; }
+		public string Description { get; set; } = "No image uploaded";
+		public IList<string> Tags { get; set; } = new List<string>();
+		public bool IsDog { get; set; } = false;
+		public string URL { get; set; } = "";
 	}
 
 }

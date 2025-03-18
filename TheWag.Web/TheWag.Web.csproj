@@ -4,17 +4,20 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>2854fdc1-fcdd-4bd5-9b6c-4492bc75ef11</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TheWag.Data\TheWag.Data.csproj" />
     <ProjectReference Include="..\TheWag.ServiceDefaults\TheWag.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\TheWag.Util.Azure\TheWag.Util.Azure.csproj" />
+    <ProjectReference Include="..\Util.Azure.ComputerVisionClient\Util.Azure.ComputerVision.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Azure.Storage.Blobs" Version="9.1.0" />
     <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching" Version="9.0.0" />
-    <PackageReference Include="Magick.NET.Core" Version="14.5.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
   </ItemGroup>
 

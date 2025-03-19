@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TheWag.ApiService\TheWag.ApiService.csproj" />
+    <ProjectReference Include="..\TheWag.ApiService\TheWag.Api.WagDB.csproj" />
     <ProjectReference Include="..\TheWag.Web\TheWag.Web.csproj" />
   </ItemGroup>
 
@@ -20,6 +20,7 @@
     <PackageReference Include="Aspire.Hosting.AppHost" Version="9.1.0" />
     <PackageReference Include="Aspire.Hosting.Azure.Storage" Version="9.1.0" />
     <PackageReference Include="Aspire.Hosting.Redis" Version="9.0.0" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" Version="9.1.0" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,14 @@
 ﻿@using TheWag.Models;
 @using Util.Azure.ComputerVision;
 @using Azure.Storage.Blobs;
+@using TheWag.Data;
+
 
 @inject ComputerVisionClient visionClient; 
 @inject BlobServiceClient blobClient;
+@inject WagDBApiClient WagDBApi
+
+
 
 @page "/sell"
 
@@ -38,11 +43,12 @@
 	private vmSellUpload vm;
 	private static readonly HashSet<string> _imageExtension = new HashSet<string>([".jpg", ".jpeg", ".png", ".gif", ".webp"], StringComparer.OrdinalIgnoreCase);
 
-	// protected override async Task OnInitializedAsync()
-	// {
-	// 	//getImgInfo();
+	protected override async Task OnInitializedAsync()
+	{
 
-	// }
+		var r = await WagDBApi.GetProductsAsync(null);
+
+	}
 
 	private async void OnInputFileChange(InputFileChangeEventArgs e)
 	{
@@ -97,6 +103,21 @@
 			}
 			vm = tempVm;		
 			StateHasChanged();
+
+			//save to db (call api)
+				
+
+			// dbContext.Add<TheWag.Data.EFModels.Product>(new TheWag.Data.EFModels.Product
+			// 	{
+			// 		Description = tempVm.Description,
+			// 		Price = 20,
+			// 		Stock = 1,
+			// 		URL = tempVm.URL,
+			// 		Tags = tempVm.Tags.Select(x => new Product_Tag(){Tag = x}).ToList(),	
+			// 	});
+			// dbContext.SaveChanges();
+
+			// var p = dbContext.Find<TheWag.Data.EFModels.Product>(1);
 		}
 	}
 

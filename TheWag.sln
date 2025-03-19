@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.AppHost", "TheWag.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.ServiceDefaults", "TheWag.ServiceDefaults\TheWag.ServiceDefaults.csproj", "{C027B70F-0F66-4783-AC5B-B3235570D087}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.ApiService", "TheWag.ApiService\TheWag.ApiService.csproj", "{39EC0714-A3B8-44A7-994B-BF818C6014B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Api.WagDB", "TheWag.ApiService\TheWag.Api.WagDB.csproj", "{39EC0714-A3B8-44A7-994B-BF818C6014B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Web", "TheWag.Web\TheWag.Web.csproj", "{AC8D3862-07BF-4675-8705-EAD2628CFAA2}"
 EndProject

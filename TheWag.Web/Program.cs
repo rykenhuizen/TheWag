@@ -1,5 +1,8 @@
 using Util.Azure.ComputerVision;
 using TheWag.Web.Components;
+using Aspire.Microsoft.EntityFrameworkCore.SqlServer;
+using TheWag.Data;
+using TheWag.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,22 +14,20 @@ builder.AddRedisOutputCache("cache");
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-//builder.Services.AddSingleton<BlobService>(new BlobService("thewagstorage"));
-//builder.Services.AddSingleton<ComputerVisionService>(new ComputerVisionService("thewagcomputervision"));
-
 //lazy load
-//builder.Services.AddSingleton<BlobService>(serviceProvider => new BlobService("thewagstorage"));
 builder.Services.AddSingleton<ComputerVisionClient>(serviceProvider => new ComputerVisionClient());
 
 builder.AddAzureBlobClient("blobs");
 
+//builder.AddSqlServerDbContext<TheWagDBContext>(connectionName: "WagDB");
+//builder.Services.AddDbContextFactory<TheWagDBContext>(connectionName: "WagDB");
 
-//builder.Services.AddHttpClient<WeatherApiClient>(client =>
-//    {
-//        // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
-//        // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
-//        client.BaseAddress = new("https+http://apiservice");
-//    });
+builder.Services.AddHttpClient<WagDBApiClient>(client =>
+{
+    // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
+    // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
+    client.BaseAddress = new("https+http://wagdbapi");
+});
 
 
 var app = builder.Build();

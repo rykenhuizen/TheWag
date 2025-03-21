@@ -23,18 +23,11 @@ var blobs = builder.AddAzureStorage("storage")
              azurite.WithLifetime(ContainerLifetime.Persistent);
          }).AddBlobs("blobs");
 
-//var sql = builder.AddSqlServer("WagDBServer")
-//                 .WithLifetime(ContainerLifetime.Persistent)
-//                 .WithContainerRuntimeArgs("-p", "1433:1433");
+IResourceBuilder<IResourceWithConnectionString> databaseConnectionString = builder.AddConnectionString("wagdb");
 
-//var sqlServer = builder.AddAzureSqlServer("sqlserver")
-//                       .AddDatabase("sqldb");
-
-//var wagDbService = builder.AddProject<Projects.TheWag_Api_WagDB>("wagdbservice");
-
-var wagDbApi = builder.AddProject<Projects.TheWag_Api_WagDB>("wagdbapi");
-//.WithReference(wagdb);
-
+var wagDbApi = builder.AddProject<Projects.TheWag_Api_WagDB>("wagdbapi")
+    .WithReference(databaseConnectionString)
+    ;
 
 builder.AddProject<Projects.TheWag_Web>("webfrontend")
     .WithExternalHttpEndpoints()
@@ -42,10 +35,8 @@ builder.AddProject<Projects.TheWag_Web>("webfrontend")
     .WithEnvironment("VISION_KEY", visionKeySecret)
     .WithEnvironment("VISION_ENDPOINT", visionEndpointSecret)
     .WithReference(blobs).WaitFor(blobs)
-    .WithReference(wagDbApi).WaitFor(wagDbApi);
-
-//var wagdb = builder.AddConnectionString("wagdb");
-
+    .WithReference(wagDbApi).WaitFor(wagDbApi)
+    ;
 
 
 builder.Build().Run();

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace TheWag.Models
 {
-    public record Product
+    public record ProductDTO
     {
         public required int Id { get; init; }
         public required string URL { get; init; }
         public required decimal Price { get; init; }
         public required int Stock { get; init; }
         public required string Description { get; init; }
-        public IList<string> Tags { get; init; } = []; 
+        public IList<TagDTO> Tags { get; init; } = []; 
     }
 }

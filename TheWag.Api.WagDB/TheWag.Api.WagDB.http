@@ -1,0 +1,10 @@
+@TheWag.Api.WagDB_HostAddress = https://localhost:7094
+
+GET {{TheWag.Api.WagDB_HostAddress}}/product/
+Accept: application/json
+
+###
+
+GET {{TheWag.Api.WagDB_HostAddress}}/product
+
+###

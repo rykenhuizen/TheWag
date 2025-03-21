@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TheWag.ApiService\TheWag.Api.WagDB.csproj" />
+    <ProjectReference Include="..\TheWag.Api.WagDB\TheWag.Api.WagDB.csproj" />
     <ProjectReference Include="..\TheWag.Web\TheWag.Web.csproj" />
   </ItemGroup>
 
@@ -21,6 +21,11 @@
     <PackageReference Include="Aspire.Hosting.Azure.Storage" Version="9.1.0" />
     <PackageReference Include="Aspire.Hosting.Redis" Version="9.0.0" />
     <PackageReference Include="Aspire.Hosting.SqlServer" Version="9.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
   </ItemGroup>
 
 </Project>

@@ -6,17 +6,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.AppHost", "TheWag.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.ServiceDefaults", "TheWag.ServiceDefaults\TheWag.ServiceDefaults.csproj", "{C027B70F-0F66-4783-AC5B-B3235570D087}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Api.WagDB", "TheWag.ApiService\TheWag.Api.WagDB.csproj", "{39EC0714-A3B8-44A7-994B-BF818C6014B0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Web", "TheWag.Web\TheWag.Web.csproj", "{AC8D3862-07BF-4675-8705-EAD2628CFAA2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Tests", "TheWag.Tests\TheWag.Tests.csproj", "{0353F3BD-DA33-485D-8096-EB257D12BCA4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Models", "TheWag.Models\TheWag.Models.csproj", "{01E78EE2-10CD-4669-A2C7-22D575A09DAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Data", "TheWag.Data\TheWag.Data.csproj", "{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util.Azure.ComputerVision", "Util.Azure.ComputerVisionClient\Util.Azure.ComputerVision.csproj", "{9DC28540-99CA-4703-A58B-80A09B703EFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWag.Api.WagDB", "TheWag.Api.WagDB\TheWag.Api.WagDB.csproj", "{AF4A4B6F-8069-463C-BEF5-622336E9E1E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,10 +30,6 @@ Global
 		{C027B70F-0F66-4783-AC5B-B3235570D087}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C027B70F-0F66-4783-AC5B-B3235570D087}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C027B70F-0F66-4783-AC5B-B3235570D087}.Release|Any CPU.Build.0 = Release|Any CPU
-		{39EC0714-A3B8-44A7-994B-BF818C6014B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{39EC0714-A3B8-44A7-994B-BF818C6014B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{39EC0714-A3B8-44A7-994B-BF818C6014B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{39EC0714-A3B8-44A7-994B-BF818C6014B0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AC8D3862-07BF-4675-8705-EAD2628CFAA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AC8D3862-07BF-4675-8705-EAD2628CFAA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC8D3862-07BF-4675-8705-EAD2628CFAA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,14 +42,14 @@ Global
 		{01E78EE2-10CD-4669-A2C7-22D575A09DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01E78EE2-10CD-4669-A2C7-22D575A09DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01E78EE2-10CD-4669-A2C7-22D575A09DAB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B54D0DFA-2E3C-4965-9B34-ABEFF2312477}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9DC28540-99CA-4703-A58B-80A09B703EFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9DC28540-99CA-4703-A58B-80A09B703EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DC28540-99CA-4703-A58B-80A09B703EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DC28540-99CA-4703-A58B-80A09B703EFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF4A4B6F-8069-463C-BEF5-622336E9E1E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF4A4B6F-8069-463C-BEF5-622336E9E1E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF4A4B6F-8069-463C-BEF5-622336E9E1E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF4A4B6F-8069-463C-BEF5-622336E9E1E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

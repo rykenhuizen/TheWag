@@ -58,24 +58,14 @@
     }
 </div>
 @code {
-    private TheWag.Models.Cart? cart;
+    private TheWag.Models.Cart cart = GetEmptyCart();
     private decimal total = 0;
 
     protected override async Task OnInitializedAsync()
     {
         //see if a cart exists in session
         var result = await ProtectedSessionStore.GetAsync<TheWag.Models.Cart>("cart");
-        cart = result.Success ? result.Value : null;
-        if (cart == null)
-        {
-            //no cart found, create one
-            cart = new TheWag.Models.Cart()
-                {
-                    Customer = new Customer() { Email = "email" },
-                    Items = new List<CartItem>() { }
-                };
-            await ProtectedSessionStore.SetAsync("cart", cart);
-        }
+        cart = result.Success ? result.Value : GetEmptyCart();
         UpdateTotal();
 
     }
@@ -116,5 +106,14 @@
         await ProtectedSessionStore.SetAsync("cart", cart);
         UpdateTotal();
     }
+
+    private static TheWag.Models.Cart GetEmptyCart()
+	{
+        return new TheWag.Models.Cart()
+			{
+				Customer = new Customer() { Email = "email" },
+				Items = new List<CartItem>() { }
+			};
+	}
 	
 }

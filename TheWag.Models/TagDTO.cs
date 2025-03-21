@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace TheWag.Models
 {
-    public class CartItem
+    public record TagDTO
     {
-        public required ProductDTO Product { get; init; }
-        public required int Quantity { get; set; }
+        public required int Id { get; init; }
+        public required string Name { get; init; }
     }
 }

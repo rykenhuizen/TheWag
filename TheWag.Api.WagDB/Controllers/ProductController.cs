@@ -21,7 +21,7 @@ namespace TheWag.Api.WagDB.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet(Name = "GetProducts")]
+        [HttpGet]
         public IList<ProductDTO> Index()
         {
             var result = _mapper.ProjectTo<ProductDTO>(_context.Products).ToList();

@@ -56,8 +56,8 @@ h1:focus {
 }
 
 .img, .force-fit {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     object-fit: cover
 }
 
@@ -71,4 +71,9 @@ h1:focus {
     width: 1em;
     height: 1em;
     object-fit: cover
+}
+
+.text-wrap {
+    max-width: 200px;
+    word-wrap: break-word;
 }

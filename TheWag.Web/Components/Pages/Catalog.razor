@@ -1,7 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using TheWag.Models;
+@using Azure.Storage.Blobs;
 
 @inject ProtectedSessionStorage ProtectedSessionStore
+@inject WagDBApiClient WagDBApi
+@inject BlobServiceClient blobClient;
 
 @page "/catalog"
 @attribute [StreamRendering(true)]
@@ -24,18 +27,20 @@ else
             {
 
                 <div class="col">
-                    <div class="card container-sm">
-                        <img src="@vmProduct.Product.URL" class="card-img-top force-fit" alt="@vmProduct.Product.Description">
-                        <div class="card-body">
-                            <h5 class="card-title">@vmProduct.Product.Description</h5>
-                            <p class="card-text">Price: $@vmProduct.Product.Price</p>
-                            <button type="button" @onclick="(() => AddToCart(vmProduct.Product.Id))" class="btn btn-primary position-relative">
-                                @vmProduct.addBtnText
-                                <span class="@vmProduct.hideBadge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    @vmProduct.Quantity In cart
-                                    <span class="visually-hidden">Already in cart</span>
-                                </span>
-                            </button>
+                    <div class="card container-sm h-100">
+                        <img src="@vmProduct.URL" class="card-img-top force-fit" alt="@vmProduct.Product.Description">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title, text-wrap">@vmProduct.Product.Description</h5>
+                            <p class="card-text">Price: @vmProduct.Product.PriceCurrency)</p>
+                            <div class="mt-auto">
+                                <button type="button" @onclick="(() => AddToCart(vmProduct.Product.Id))" class="btn btn-primary position-relative ">
+                                    @vmProduct.addBtnText
+                                    <span class="@vmProduct.hideBadge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        @vmProduct.Quantity In cart
+                                        <span class="visually-hidden">Already in cart</span>
+                                    </span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -46,6 +51,7 @@ else
 
 @code {
     private IList<vmProduct>? vmProducts = new List<vmProduct>();
+    private string blobContainer = "dogpictures";
 
     protected override async Task OnInitializedAsync()
     {
@@ -61,25 +67,33 @@ else
                 Items = new List<CartItem>() {}
             };
         }
-
-        //get all products
-       // var productRepo = new ProductRepo();
-        //var products = productRepo.GetProducts(null);
-
-        //create a view model for each product
-        // foreach (var product in products)
-        // {
-        //     var qty = cart.Items.FirstOrDefault(x => x.Product.Id == product.Id)?.Quantity ?? 0;
-        //     vmProducts.Add(new vmProduct() { 
-        //             Product = product, 
-        //             Quantity = qty,
-        //             addBtnText = qty > 0 ? "Add another" : "Add to cart",
-        //             hideBadge = qty > 0 ? "" : "visually-hidden"
-        //     });
-        // }
-
         //persist the cart to session
         await ProtectedSessionStore.SetAsync("cart", cart);
+
+        //get all products
+        var products = await WagDBApi.GetAllProductsAsync();
+        var bcc = blobClient.GetBlobContainerClient(blobContainer);
+
+        foreach (var product in products)
+        {
+            var qty = cart.Items.FirstOrDefault(x => x.Product.Id == product.Id)?.Quantity ?? 0;
+
+            //if the pic doesn't exist in storage, dont load
+            if (bcc.GetBlobClient(product.URL.Trim()).Exists())
+            {
+                vmProducts.Add(new vmProduct()
+                    {
+                        //check to see if the pic exits
+                        Product = product,
+                        URL = $"{blobClient.Uri.ToString().TrimEnd('/')}/{blobContainer}/{product.URL}",
+                        Quantity = qty,
+                        addBtnText = qty > 0 ? "Add another" : "Add to cart",
+                        hideBadge = qty > 0 ? "" : "visually-hidden"
+                    });
+            }
+    }
+
+        StateHasChanged();
 
     }
 
@@ -107,13 +121,14 @@ else
         else{
             cartItem.Quantity++;
         }
-        
+
         await ProtectedSessionStore.SetAsync("cart", cart);
     }
 
     public class vmProduct
     {
         public required ProductDTO Product { get; set; }
+        public required string URL { get; set; }
         public int Quantity { get; set; } = 0;
         public required string addBtnText { get; set; }
         public string hideBadge { get; set; } = "";

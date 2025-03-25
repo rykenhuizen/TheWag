@@ -45,15 +45,15 @@
                             @item.Quantity
                             <img src="images/plus.png" class="icon" @onclick="(() => AddItem(item.Product.Id))" />
                         </td>
-                        <td>$@item.Product.Price</td>
-                        <td>$@GetSubTotal(item.Quantity, item.Product.Price)</td>
+                        <td>@item.Product.PriceCurrency</td>
+                        <td>@GetSubTotal(item.Quantity, item.Product.Price)</td>
                     </tr>
                 }
                 <tr>
                     <td>Total</td>
                     <td></td>
                     <td></td>
-                    <td>$@total</td>
+                    <td>@string.Format("{0:C}", total)</td>
                 </tr>
             </tbody>
         </table>
@@ -72,10 +72,10 @@
 
     }
 
-    private decimal GetSubTotal(int qty, decimal price)
+    private string GetSubTotal(int qty, decimal price)
     {
         var subtotal = qty * price;
-        return subtotal;
+        return string.Format("{0:C}", subtotal);
     }
 
     private void UpdateTotal()

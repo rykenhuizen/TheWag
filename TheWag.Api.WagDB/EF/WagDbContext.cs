@@ -106,10 +106,10 @@ public partial class WagDbContext : DbContext
         {
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.FkProductId).HasColumnName("FK_Product_ID");
-            entity.Property(e => e.Tag1)
+            entity.Property(e => e.Text)
                 .HasMaxLength(255)
                 .IsFixedLength()
-                .HasColumnName("Tag");
+                .HasColumnName("Text");
 
             entity.HasOne(d => d.FkProduct).WithMany(p => p.Tags)
                 .HasForeignKey(d => d.FkProductId)

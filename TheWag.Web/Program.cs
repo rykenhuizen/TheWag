@@ -1,8 +1,7 @@
 using Util.Azure.ComputerVision;
 using TheWag.Web.Components;
-using Aspire.Microsoft.EntityFrameworkCore.SqlServer;
-using TheWag.Data;
 using TheWag.Web;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,10 +16,8 @@ builder.Services.AddRazorComponents()
 //lazy load
 builder.Services.AddSingleton<ComputerVisionClient>(serviceProvider => new ComputerVisionClient());
 
-builder.AddAzureBlobClient("blobs");
 
-//builder.AddSqlServerDbContext<TheWagDBContext>(connectionName: "WagDB");
-//builder.Services.AddDbContextFactory<TheWagDBContext>(connectionName: "WagDB");
+builder.AddAzureBlobClient("blobs");
 
 builder.Services.AddHttpClient<WagDBApiClient>(client =>
 {
@@ -28,7 +25,6 @@ builder.Services.AddHttpClient<WagDBApiClient>(client =>
     // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
     client.BaseAddress = new("https+http://wagdbapi");
 });
-
 
 var app = builder.Build();
 

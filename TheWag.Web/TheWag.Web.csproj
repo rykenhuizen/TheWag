@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TheWag.Data\TheWag.Data.csproj" />
+    <ProjectReference Include="..\TheWag.Models\TheWag.Models.csproj" />
     <ProjectReference Include="..\TheWag.ServiceDefaults\TheWag.ServiceDefaults.csproj" />
     <ProjectReference Include="..\Util.Azure.ComputerVisionClient\Util.Azure.ComputerVision.csproj" />
   </ItemGroup>

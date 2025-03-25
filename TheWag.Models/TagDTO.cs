@@ -8,7 +8,7 @@ namespace TheWag.Models
 {
     public record TagDTO
     {
-        public required int Id { get; init; }
-        public required string Name { get; init; }
+        public int? Id { get; init; }
+        public required string Text { get; init; }
     }
 }

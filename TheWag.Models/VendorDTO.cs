@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace TheWag.Models
 {
-    public record Vendor
+    public record VendorDTO
     {
-        public required string Name { get; init; }
-        public required bool Reseller { get; init; }
+        public int? Id { get; init; }
+        public string? Name { get; init; }
+        public string? Email { get; init; }
     }
 }

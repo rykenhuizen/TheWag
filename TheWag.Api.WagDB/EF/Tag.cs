@@ -9,7 +9,7 @@ public partial class Tag
 
     public int FkProductId { get; set; }
 
-    public string Tag1 { get; set; } = null!;
+    public string Text { get; set; } = null!;
 
     public virtual Product FkProduct { get; set; } = null!;
 }

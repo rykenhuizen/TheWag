@@ -1,6 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using TheWag.Models;
-@using TheWag.Data;
 
 @inject ProtectedSessionStorage ProtectedSessionStore
 
@@ -85,7 +84,7 @@ else
     }
 
 
-    private async Task AddToCart(int id)
+    private async Task AddToCart(int? id)
     {
         //update the vm
         var vm = vmProducts?.FirstOrDefault(x => x.Product.Id == id);

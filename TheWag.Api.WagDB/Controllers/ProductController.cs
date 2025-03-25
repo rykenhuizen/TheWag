@@ -24,32 +24,9 @@ namespace TheWag.Api.WagDB.Controllers
         [HttpGet(Name = "GetProducts")]
         public IList<ProductDTO> Index()
         {
-            var products = _context.Products.ToArray();
-
             var result = _mapper.ProjectTo<ProductDTO>(_context.Products).ToList();
 
             return result;
-
-            //return _context.GetProducts();
-            //return new Product[]
-            //{
-            //    new Product
-            //    {
-            //        Id = 1,
-            //        URL = "https://www.google.com",
-            //        Description = "Description 1",
-            //        Price = 10.00m,
-            //        Stock = 10
-            //    },
-            //    new Product
-            //    {
-            //        Id = 2,
-            //        URL = "Product 2",
-            //        Description = "Description 2",
-            //        Price = 20.00m,
-            //        Stock = 20
-            //    }
-            //};
 
         }
 
@@ -65,20 +42,22 @@ namespace TheWag.Api.WagDB.Controllers
         //    return View();
         //}
 
-        //// POST: ProductController/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+        // POST: ProductController/Create
+        [HttpPost]
+        public IActionResult Create([FromBody]ProductDTO product)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var p = _mapper.Map<Product>(product);
+            var r = _context.Products.Add(_mapper.Map<Product>(p));
+            _context.SaveChanges();
+            //return CreatedAtAction("GetProduct", new { Id = product.Id }, product); 
+            return Ok();
+
+        }
 
         //// GET: ProductController/Edit/5
         //public ActionResult Edit(int id)

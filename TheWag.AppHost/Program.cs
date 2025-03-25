@@ -20,13 +20,14 @@ var blobs = builder.AddAzureStorage("storage")
     }).RunAsEmulator(
          azurite =>
          {
-             azurite.WithLifetime(ContainerLifetime.Persistent);
+             azurite.WithDataVolume();
          }).AddBlobs("blobs");
 
-IResourceBuilder<IResourceWithConnectionString> databaseConnectionString = builder.AddConnectionString("wagdb");
+//TODO: for dev, use local contaier for wagdb
+IResourceBuilder < IResourceWithConnectionString > databaseConnectionString = builder.AddConnectionString("wagdb");
 
 var wagDbApi = builder.AddProject<Projects.TheWag_Api_WagDB>("wagdbapi")
-    .WithReference(databaseConnectionString)
+.WithReference(databaseConnectionString)
     ;
 
 builder.AddProject<Projects.TheWag_Web>("webfrontend")

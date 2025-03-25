@@ -1,62 +1,84 @@
-﻿@using TheWag.Models;
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using TheWag.Models;
 @using Util.Azure.ComputerVision;
 @using Azure.Storage.Blobs;
-@using TheWag.Data;
 
 
 @inject ComputerVisionClient visionClient; 
 @inject BlobServiceClient blobClient;
 @inject WagDBApiClient WagDBApi
 
-
-
 @page "/sell"
 
 <h3>Sell you dog pictures!</h3>
 
-@if (vm != null)
-{
-	<div>
 
-		<h3>Upload complete.</h3>
-		<p>Description: @vm.Description</p>
-		<p>Tags: @string.Join(",", vm.Tags.Select(x => x))</p>
-		<p>
-			Is this a pick of a dog: 
-			@if(vm.IsDog){
-				<span> this is a dog!</span>
-			} else{
-				<span> does not seem to be a picture of a dog</span>
-			}
-		</p>
-		<img src="@vm.URL" />
-	</div>
-}else
+@if (sellStage == SellStage.rdyToUpload)
 {
 	<div>
 		<InputFile OnChange="OnInputFileChange" single />
 	</div>
 }
 
+@if (sellStage == SellStage.rdyToSell)
+{
+	<div>
+		<img src="@vmPic.URL" />
+		<h3>Upload complete, this is a picture of a dog!</h3>
+		<p>Description: @vmPic.Description</p>
+		<p>Tags: @string.Join(",", vmPic.Tags.Select(x => x))</p>
+	</div>
+
+	<EditForm Model="sellModel" OnSubmit="SaveToDB" FormName="SellDogPic">
+		<h3>Let's sell this puppy!</h3>
+		<p>How much is this cutness worth: <input @bind-value="sellModel!.Price" /></p>
+		<p>How many of these puppies do you have to sell:<input @bind-value="sellModel!.Stock" /></p>
+		<button type="submit">Sell</button>
+	</EditForm>
+}
+
+@if (sellStage == SellStage.addedToCatalog)
+{
+	<div>
+		<h3>Added to <NavLink href="catalog">catalog!</NavLink></h3>
+	</div>
+}
+
+@if (sellStage == SellStage.notADog)
+{
+	<div>
+		<h3>Sorry, we only sell dog pictures.</h3>
+		<p>Description: @vmPic.Description</p>
+		<img src="@vmPic.URL" />
+	</div>
+}
+
 @code {
 
-	private vmSellUpload vm;
+	[SupplyParameterFromForm]
+	private SellModel sellModel { get; set; }
+	private vmSellUploadPic vmPic;
+	private enum SellStage {rdyToUpload, rdyToSell, addedToCatalog, notADog,};
+	private SellStage sellStage = SellStage.rdyToUpload;
 	private static readonly HashSet<string> _imageExtension = new HashSet<string>([".jpg", ".jpeg", ".png", ".gif", ".webp"], StringComparer.OrdinalIgnoreCase);
 
-	protected override async Task OnInitializedAsync()
+	protected override void OnInitialized()
 	{
 
-		var r = await WagDBApi.GetProductsAsync(null);
+		//var r = await WagDBApi.GetProductsAsync(null);
+		sellModel ??= new SellModel();
 
 	}
 
 	private async void OnInputFileChange(InputFileChangeEventArgs e)
 	{
+		//TODO: maybe move this out of the view
 		var file = e.File;
 		if (file != null)
 		{
 			//TODO: I think there is a better solution than this tempVm
-			var tempVm = new vmSellUpload();
+			var tempVm = new vmSellUploadPic();
 
 			//get a memory stream of the uploaded img
 			MemoryStream ms = new MemoryStream();
@@ -83,7 +105,8 @@
 
 			//save the image to blob storage
 			//TODO: do this first and take advantage of async
-			try{
+			try
+			{
 
 				var blobContainer = tempVm.IsDog == true ? "dogpictures" : "invalidpictures";
 				var bcc = blobClient.GetBlobContainerClient(blobContainer);
@@ -94,6 +117,7 @@
 				bcc.UploadBlob(fileName, bd);
 				bcc.SetAccessPolicy(Azure.Storage.Blobs.Models.PublicAccessType.BlobContainer);
 
+				tempVm.FileName = fileName;
 				tempVm.URL = $"{blobClient.Uri.ToString().TrimEnd('/')}/{blobContainer}/{fileName}";
 			}
 			catch (Exception ex)
@@ -101,33 +125,58 @@
 				Console.WriteLine(ex.ToString());
 				tempVm.Description += " Error uploading image: " + ex.ToString();
 			}
-			vm = tempVm;		
+			vmPic = tempVm;
+			sellStage = vmPic.IsDog ? SellStage.rdyToSell : SellStage.notADog;
 			StateHasChanged();
 
-			//save to db (call api)
-				
-
-			// dbContext.Add<TheWag.Data.EFModels.Product>(new TheWag.Data.EFModels.Product
-			// 	{
-			// 		Description = tempVm.Description,
-			// 		Price = 20,
-			// 		Stock = 1,
-			// 		URL = tempVm.URL,
-			// 		Tags = tempVm.Tags.Select(x => new Product_Tag(){Tag = x}).ToList(),	
-			// 	});
-			// dbContext.SaveChanges();
-
-			// var p = dbContext.Find<TheWag.Data.EFModels.Product>(1);
 		}
 	}
 
-	public class vmSellUpload
+	private async void SaveToDB()
 	{
+		var tags = vmPic.Tags.Select(x => new TagDTO() { Text = x }).ToList();
 
-		public string Description { get; set; } = "No image uploaded";
-		public IList<string> Tags { get; set; } = new List<string>();
-		public bool IsDog { get; set; } = false;
-		public string URL { get; set; } = "";
+		var product = new ProductDTO()
+			{
+				Description = vmPic.Description,
+				Price = sellModel.Price,
+				Stock = sellModel.Stock,
+				URL = vmPic.FileName,
+				Tags = tags,
+				Vendor = null
+			};
+
+		//var r = await 
+		WagDBApi.SaveProductAsync(product);
+
+		sellStage = SellStage.addedToCatalog;
+		StateHasChanged();
 	}
+
+	internal class vmSellUploadPic
+	{
+		internal string Description { get; set; } = "No image uploaded";
+		internal IList<string> Tags { get; set; } = new List<string>();
+		internal bool IsDog { get; set; } = false;
+		internal string URL { get; set; } = "";
+		internal string FileName { get; set; } = "";
+	}
+
+	// private class vmSellUploadDB
+	// {
+	// 	private decimal Price { get; set; } = 9.99m;
+	// 	private int Stock { get; set; } = 10;
+	// 	private string? VendorEmail { get; set; } = "Vendor Email";
+	// 	private string? VendorName { get; set; } = "Vendor Name";
+	// }
+
+	internal class SellModel
+	{
+		internal decimal Price { get; set; } = 9.99m;
+		internal int Stock { get; set; } = 10;
+		internal string? VendorEmail { get; set; } = "Vendor Email";
+		internal string? VendorName { get; set; } = "Vendor Name";
+	}
+	
 
 }

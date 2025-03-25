@@ -9,7 +9,9 @@
         public MappingProfile()
         {
             CreateMap<Product, ProductDTO>();
+            CreateMap<ProductDTO, Product>();
             CreateMap<Tag, TagDTO>();
+            CreateMap<TagDTO, Tag>();
         }
     }
 }
